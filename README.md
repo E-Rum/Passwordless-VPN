@@ -12,11 +12,49 @@ Please note that this instruction is far from optimal and has several drawbacks.
 
 As I am using macOS, the instructions will be provided using macOS commands. However, they are quite similar to most Linux systems
 
-## Setup
+## Install OpenConnect
 
-
-We will begin by installing the OpenConnect VPN client, which supports several protocols, including the one used by Cisco AnyConnect.
+We will begin by installing the OpenConnect VPN client (https://www.infradead.org/openconnect/), which supports several protocols, including the one used by Cisco AnyConnect. Here we will install it using Homebrew (https://brew.sh)
 
 ```bash
 brew install openconnect
 ```
+From here, the connection should be as straightforward as it seems: just connect to your desired server using:
+
+```bash
+openconnect server_adress.org
+```
+where server_address.org is the VPN address of your desired server.
+
+However, you are most likely going to face some sort of error that will contain messages like "Operation not permitted." So, we have to resolve it first.
+
+## Sudo
+
+Every time we encounter a situation where we lack the necessary permissions to perform a certain action on our system, the first idea that comes to mind is to utilize the "sudo" command. This command grants us the ability to execute any command with superuser privileges.
+
+Indeed, if we type
+
+```bash
+sudo openconnect server_adress.org
+```
+it will ask for the password of your system. After typing it, we will be able to enter the username and password of the VPN server, and voila, we are connected! :)
+
+
+But it doesn't make our lives much easier. Right now, we have to do even more work rather than making a simple VPN connection with other utilities, as we are obligated to enter an additional password for the system because of "sudo".
+
+## Breaking through "three walls."
+
+The path to our VPN connection, via a single simple command, lies behind "three walls": your system password, VPN username, and VPN server password.
+
+Let's begin with the system password. There is a way that allows you to avoid entering your system password when using "sudo." Additionally, we will introduce some neatness to our method by configuring it to not require a password for "sudo" specifically when used with the openconnect command.
+
+
+Without any tedious theory or unnecessary explanations, to achieve this, you need to open the "etc/sudoers" file and append the following line at the end:
+
+`"user" ALL = (root) NOPASSWD: "path_to_the_openconnect"`
+
+Here, "user" represents the username of your system, and "path_to_the_openconnect" indicates the installation path of openconnect. If you installed it via brew, the path would be: /opt/homebrew/bin/openconnect.
+
+Keep in mind that in order to make changes to the "/etc/sudoers" file, you need to have the appropriate permissions. Therefore, use the "sudo" command before your preferred text editor.
+
+Reload your terminal. If you have done it correctly, you won't be required to enter your system password anymore when you type "sudo openconnect."
