@@ -58,3 +58,21 @@ Here, "user" represents the username of your system, and "path_to_the_openconnec
 Keep in mind that in order to make changes to the "/etc/sudoers" file, you need to have the appropriate permissions. Therefore, use the "sudo" command before your preferred text editor.
 
 Reload your terminal. If you have done it correctly, you won't be required to enter your system password anymore when you type "sudo openconnect."
+
+VPN usernames and server passwords are now easier to bypass. The "openconnect" command provides additional options that can be useful for our purposes. For example, the "-u" flag allows you to specify the username within the command, and the "--passwd-on-stdin" flag enables you to enter the password from the standard input.
+
+Therefore the following command:
+
+```bash
+echo 'pass' | sudo openconnect server_adress.org -u vpn_username --passwd-on-stdin
+```
+
+Will automatically use the username "vpn_username" and retrieve the password "pass" from the standard input.
+
+Try executing this command with your VPN username and VPN server password to see if it works.
+
+Finally, you can create an alias in your .bashrc or .zshrc file, depending on the environment you are using:
+
+`alias vpn_connect="echo 'pass' | sudo openconnect server_adress.org -u vpn_username --passwd-on-stdin"`
+
+Now you will be able to start your VPN connection to the server simply by typing "vpn_connect" in the terminal. Enjoy! ;)
